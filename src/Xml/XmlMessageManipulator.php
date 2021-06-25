@@ -20,10 +20,9 @@ final class XmlMessageManipulator
      */
     public function __invoke(MessageInterface $message, callable $manipulator): MessageInterface
     {
-        return $message->withBody(
-            Document::configure(loader(new Psr7StreamLoader($message->getBody())))
-                ->manipulate($manipulator)
-                ->map(new Psr7StreamMapper())
-        );
+        $document = Document::configure(loader(new Psr7StreamLoader($message->getBody())));
+        $manipulator($document);
+
+        return $message->withBody($document->map(new Psr7StreamMapper()));
     }
 }

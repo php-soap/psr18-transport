@@ -7,8 +7,7 @@ namespace Soap\Psr18Transport\Xml\Loader;
 use DOMDocument;
 use Psr\Http\Message\StreamInterface;
 use VeeWee\Xml\Dom\Loader\Loader;
-use function VeeWee\Xml\Dom\Configurator\loader;
-use function VeeWee\Xml\Reader\Loader\xml_string_loader;
+use function VeeWee\Xml\Dom\Loader\xml_string_loader;
 
 final class Psr7StreamLoader implements Loader
 {
@@ -21,8 +20,7 @@ final class Psr7StreamLoader implements Loader
 
     public function __invoke(DOMDocument $document): void
     {
-        loader(xml_string_loader(
-            (string)$this->stream
-        ))($document);
+        $this->stream->rewind();
+        xml_string_loader((string)$this->stream)($document);
     }
 }
