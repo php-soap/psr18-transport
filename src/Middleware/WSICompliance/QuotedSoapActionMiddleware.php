@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Phpro\SoapClient\Middleware\WSICompliance;
+namespace Soap\Psr18Transport\Middleware\WSICompliance;
 
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;

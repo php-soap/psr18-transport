@@ -1,42 +1,35 @@
 <?php
 
-namespace Phpro\SoapClient\Middleware;
+namespace Soap\Psr18Transport\Middleware;
 
+use DOMNode;
+use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
-use Phpro\SoapClient\Xml\SoapXml;
-use Phpro\SoapClient\Xml\Xml;
 use Psr\Http\Message\RequestInterface;
+use Soap\Psr18Transport\Xml\XmlMessageManipulator;
+use Soap\Xml\Xpath\EnvelopePreset;
+use VeeWee\Xml\Dom\Document;
+use function VeeWee\Xml\Dom\Manipulator\Node\remove;
 
-class RemoveEmptyNodesMiddleware extends Middleware
+class RemoveEmptyNodesMiddleware implements Plugin
 {
-    public function getName(): string
+    public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
-        return 'remove_empty_nodes_middleware';
-    }
+        $request = (new XmlMessageManipulator())(
+            $request,
+            static function (Document $xml): void {
+                $xpath = $xml->xpath(new EnvelopePreset($xml));
 
-    public function beforeRequest(callable $handler, RequestInterface $request): Promise
-    {
-        $xml = SoapXml::fromStream($request->getBody());
+                do {
+                    $emptyNodes = $xpath->query('//soap:Envelope/*//*[not(node())]');
+                    $emptyNodes->forEach(
+                        fn (DOMNode $element) => remove($element)
+                    );
 
-        // remove all empty nodes
-        while ($notNodes = $this->getNotNodes($xml)) {
-            foreach ($notNodes as $node) {
-                $node->parentNode->removeChild($node);
+                } while ($emptyNodes->count());
             }
-        }
+        );
 
-        $request = $request->withBody($xml->toStream());
-
-        return $handler($request);
-    }
-
-    private function getNotNodes(Xml $xml): ?\DOMNodeList
-    {
-        $notNodes = $xml->xpath('//soap:Envelope/*//*[not(node())]');
-        if (!$notNodes->length) {
-            return null;
-        }
-
-        return $notNodes;
+        return $next($request);
     }
 }

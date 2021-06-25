@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpro\SoapClient\Middleware\Wsdl;
+namespace Soap\Psr18Transport\Middleware\Wsdl;
 
 use DOMElement;
 use DOMNode;

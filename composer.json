@@ -8,6 +8,11 @@
             "Soap\\Psr18Transport\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "SoapTest\\Psr18Transport\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Toon Verwerft",
@@ -30,7 +35,8 @@
     "require-dev": {
         "nyholm/psr7": "^1.3",
         "php-http/mock-client": "^1.4",
-        "symfony/http-client": "^5.3"
+        "symfony/http-client": "^5.3",
+        "phpunit/phpunit": "^9.5"
     },
     "repositories": [
         {
