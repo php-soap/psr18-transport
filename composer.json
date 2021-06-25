@@ -16,12 +16,16 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
+        "ext-dom": "*",
         "php-soap/engine": "dev-main",
+        "php-soap/xml": "dev-main",
         "php-http/discovery": "^1.12",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory-implementation": "^1.0",
         "psr/http-message-implementation": "^1.0",
-        "psr/http-message": "^1.0.1"
+        "psr/http-message": "^1.0.1",
+        "veewee/xml": "dev-master",
+        "php-http/client-common": "^2.3"
     },
     "require-dev": {
         "nyholm/psr7": "^1.3",
@@ -32,6 +36,10 @@
         {
             "type": "path",
             "url": "../engine"
+        },
+        {
+            "type": "path",
+            "url": "../xml"
         }
     ]
 }
