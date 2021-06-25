@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "ext-dom": "*",
         "php-soap/engine": "dev-main",
         "php-soap/xml": "dev-main",
@@ -24,7 +24,7 @@
         "psr/http-factory-implementation": "^1.0",
         "psr/http-message-implementation": "^1.0",
         "psr/http-message": "^1.0.1",
-        "veewee/xml": "dev-master",
+        "veewee/xml": "^0.6.1",
         "php-http/client-common": "^2.3"
     },
     "require-dev": {
