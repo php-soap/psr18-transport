@@ -1,0 +1,37 @@
+{
+    "name": "php-soap/psr18-transport",
+    "description": "PSR-18 HTTP Client transport for SOAP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Soap\\Psr18Transport\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Toon Verwerft",
+            "email": "toonverwerft@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "php-soap/engine": "dev-main",
+        "php-http/discovery": "^1.12",
+        "psr/http-client-implementation": "^1.0",
+        "psr/http-factory-implementation": "^1.0",
+        "psr/http-message-implementation": "^1.0",
+        "psr/http-message": "^1.0.1"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.3",
+        "php-http/mock-client": "^1.4",
+        "symfony/http-client": "^5.3"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../engine"
+        }
+    ]
+}
