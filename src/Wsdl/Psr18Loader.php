@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Soap\Psr18Transport\Wsdl;
 
 
+use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
@@ -17,6 +18,14 @@ final class Psr18Loader implements WsdlLoader
     {
         $this->client = $client;
         $this->requestFactory = $requestFactory;
+    }
+
+    public static function createForClient(ClientInterface $client): self
+    {
+        return new self(
+            $client,
+            Psr17FactoryDiscovery::findRequestFactory(),
+        );
     }
 
     public function __invoke(string $location): string

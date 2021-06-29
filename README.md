@@ -171,7 +171,7 @@ Clients like guzzle and symfony/http-client also support NTLM by setting options
 ## Dealing with XML
 
 When writing custom SOAP middleware, a frequent task is to transform the request or response XML into a slight variation.
-This package provides some shortcut tools around [veewee/xml](https://github.com/veewee/xml) to make it easier for you to deal with XML.
+This package provides some shortcut tools around [php-soap/xml](https://github.com/php-soap/xml) to make it easier for you to deal with XML.
 
 
 **Example**
