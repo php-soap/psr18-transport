@@ -225,7 +225,7 @@ use Http\Client\Common\PluginClient;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
 
 $loadWsdl = Psr18Loader::createForClient(
-    $wsdlClinet = new PluginClient(
+    $wsdlClient = new PluginClient(
         $psr18Client,
         ...$middleware
     )
