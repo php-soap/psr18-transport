@@ -168,10 +168,6 @@ Adding NTLM authentication requires you to use a `curl` based PSR-18 HTTP Client
 On those clients, you can set following options: `[CURLOPT_HTTPAUTH => CURLAUTH_NTLM, CURLOPT_USERPWD => 'user:pass']`.
 Clients like guzzle and symfony/http-client also support NTLM by setting options during client configuration.
 
-However, take care as there's a [cURL misbehavior](https://github.com/curl/curl/pull/1242) that might block
-you going forward with some SOAP servers.
-
-
 ## Dealing with XML
 
 When writing custom SOAP middleware, a frequent task is to transform the request or response XML into a slight variation.
