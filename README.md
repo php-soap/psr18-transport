@@ -1,0 +1,241 @@
+# PSR-18 SOAP Transport
+
+This transport allows you to send SOAP requests over a PSR-18 HTTP client implementation.
+You can use any client you want, going from curl, guzzle, httplug, symfony/http-client, ...
+It allows you to get full control over the HTTP layer, making it possible to e.g. overcome some well-known issues in `ext-soap`.
+This package can best be used together with a [SOAP driver](https://github.com/php-soap/engine) that handles data encoding and decoding.
+
+## Prerequisites
+
+Choosing what HTTP client you want to use.
+This package expects some PSR implementations to be present in order to be installed:
+
+* PSR-7: `psr/http-message-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-17: `psr/http-factory-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
+* PSR-18: `psr/http-client-implementation` like `symfony/http-client` or `guzzlehttp/guzzle`
+
+## Installation
+
+```bash
+composer require php-soap/psr18-transport
+```
+
+## Usage
+
+```php
+
+use Http\Client\Common\PluginClient;
+use Soap\Engine\SimpleEngine;
+use Soap\Psr18Transport\Psr18Transport;
+
+$engine = new SimpleEngine(
+    $driver,
+    $transport = Psr18Transport::createForClient(
+        new PluginClient(
+            $psr18Client,
+            ...$middleware
+        )
+    )
+);
+```
+
+## Middleware
+
+This package provides some middleware implementations for dealing with some common SOAP issues.
+
+### Wsdl\DisableExtensionsMiddleware
+
+PHP's ext-soap implementation do not support `wsdl:required` attributes since there is no SOAP extension mechanism in PHP.
+You will retrieve this exception: "[SoapFault] SOAP-ERROR: Parsing WSDL: Unknown required WSDL extension"
+when the WSDL does contain required SOAP extensions.
+
+This middleware can be used to set the "wsdl:required"
+property to false when loading the WSDL so that you don't have to change the WSDL on the server.
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\Wsdl\DisableExtensionsMiddleware;
+
+$wsdlClient = new PluginClient(
+    $psr18Client,
+    [
+        new DisableExtensionsMiddleware(),
+    ]
+);
+```
+
+### Wsdl\DisablePoliciesMiddleware
+
+PHP's ext-soap client does not support the [Web Services Policy Framework](http://schemas.xmlsoap.org/ws/2004/09/policy/) attributes since there is no such support in PHP.
+You will retrieve this exception: "[SoapFault] SOAP-ERROR: Parsing WSDL: Unknown required WSDL extension 'http://schemas.xmlsoap.org/ws/2004/09/policy'"
+when the WSDL does contains WS policies.
+
+This middleware can be used to remove all UsingPolicy and Policy tags on the fly so that you don't have to change the WSDL on the server.
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\Wsdl\DisablePoliciesMiddleware;
+
+$wsdlClient = new PluginClient(
+    $psr18Client,
+    [
+        new DisablePoliciesMiddleware(),
+    ]
+);
+```
+
+
+### WSICompliance\QuotedSoapActionMiddleware
+
+Some SOAP engines do not guarantee compatibility with the [WS-I basic profile](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html).
+This middleware ensures that the action inside the SOAPAction header is always wrapped with double quotes [as specified in rule R2744](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html#R2744).
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\WSICompliance\QuotedSoapActionMiddleware;
+
+$httpClient = new PluginClient(
+    $psr18Client,
+    [
+        new QuotedSoapActionMiddleware()
+    ]
+);
+```
+
+### RemoveEmptyNodesMiddleware
+
+Empty properties are converted into empty nodes in the request XML.
+If you need to avoid empty nodes in the request xml, you can add this middleware.
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\RemoveEmptyNodesMiddleware;
+
+
+$httpClient = new PluginClient(
+    $psr18Client,
+    [
+        new RemoveEmptyNodesMiddleware()
+    ]
+);
+```
+
+### HTTPlug middleware
+
+This package includes [all basic plugins from httplug](https://docs.php-http.org/en/latest/plugins/).
+You can load any additional plugins you want, like e.g. [the logger plugin](https://github.com/php-http/logger-plugin).
+
+**Examples**
+
+```php
+use Http\Client\Common\Plugin\AuthenticationPlugin;
+use Http\Client\Common\Plugin\BaseUriPlugin;
+use Http\Client\Common\Plugin\LoggerPlugin;
+use Http\Message\Authentication\BasicAuth;
+
+
+$httpClient = new PluginClient(
+    $psr18Client,
+    [
+        new BaseUriPlugin($baseLocation),
+        new AuthenticationPlugin(new BasicAuth($_ENV['user'], $_ENV['pass'])),
+        new LoggerPlugin($psrLogger),
+    ]
+);
+```
+
+### Writing your own middleware
+
+We use httplug for its plugin system.
+You can create your own middleware by [following their documentation](https://docs.php-http.org/en/latest/plugins/build-your-own.html).
+
+## Authentication
+
+You can add authentication to both the WSDL fetching and SOAP handling part.
+For this, we suggest you to use the default [httplug authentication providers](https://docs.php-http.org/en/latest/message/authentication.html).
+
+### NTLM
+
+Adding NTLM authentication requires you to use a `curl` based PSR-18 HTTP Client.
+On those clients, you can set following options: `[CURLOPT_HTTPAUTH => CURLAUTH_NTLM, CURLOPT_USERPWD => 'user:pass']`.
+Clients like guzzle and symfony/http-client also support NTLM by setting options during client configuration.
+
+However, take care as there's a [cURL misbehavior](https://github.com/curl/curl/pull/1242) that might block
+you going forward with some SOAP servers.
+
+
+## Dealing with XML
+
+When writing custom SOAP middleware, a frequent task is to transform the request or response XML into a slight variation.
+This package provides some shortcut tools around [veewee/xml](https://github.com/veewee/xml) to make it easier for you to deal with XML.
+
+
+**Example**
+
+```php
+use Http\Client\Common\Plugin;
+use Http\Promise\Promise;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Soap\Psr18Transport\Xml\XmlMessageManipulator;
+use VeeWee\Xml\Dom\Document;
+
+class SomeMiddleware implements Plugin
+{
+    public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
+    {
+        $request = (new XmlMessageManipulator)(
+            $request,
+            fn (Document $document) => $document->manipulate(
+                doSomethingWithRequestXml()
+            )
+        );
+    
+        return $next($request)
+            ->then(function (ResponseInterface $response): ResponseInterface {
+                return (new XmlMessageManipulator)(
+                    $response,
+                    fn (Document $document) => $document->manipulate(
+                        doSomethingWithResponseXml()
+                    )
+                );
+            });
+    }
+}
+```
+
+## Loading WSDL with PSR-18 clients
+
+Also for loading WSDL's, you might want to use a PSR-18 client to do the hard HTTP work.
+This allows you for advances setups in which the WSDL is put behind basic authentication.
+This package provides some loaders that can be used to load HTTP locations.
+It can be used in combinations with for example the WSDL loaders from the `php-soap/ext-soap-engine`.
+
+
+### Psr18Loader
+
+**Examples**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Wsdl\Psr18Loader;
+
+$loadWsdl = Psr18Loader::createForClient(
+    $wsdlClinet = new PluginClient(
+        $psr18Client,
+        ...$middleware
+    )
+);
+
+$payload = $loadWsdl('http://some.wsdl');
+```
+
+*NOTE:* This loader does not flatten the WSDL file. Any additional files like XSD schema's need to manually be fetched by the loader.
