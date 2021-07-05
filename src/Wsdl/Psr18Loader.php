@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Soap\Psr18Transport\Wsdl;
 
-
 use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Soap\Wsd\Loader\WsdlLoader;
 
 final class Psr18Loader implements WsdlLoader
 {

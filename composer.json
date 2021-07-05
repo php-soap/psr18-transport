@@ -23,6 +23,7 @@
         "php": "^8.0",
         "ext-dom": "*",
         "php-soap/engine": "dev-main",
+        "php-soap/wsdl": "dev-main",
         "php-soap/xml": "dev-main",
         "php-http/discovery": "^1.12",
         "psr/http-client-implementation": "^1.0",
@@ -46,6 +47,10 @@
         {
             "type": "path",
             "url": "../xml"
+        },
+        {
+            "type": "path",
+            "url": "../wsdl"
         }
     ]
 }
