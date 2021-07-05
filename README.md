@@ -210,11 +210,10 @@ class SomeMiddleware implements Plugin
 
 ## Loading WSDL with PSR-18 clients
 
-Also for loading WSDL's, you might want to use a PSR-18 client to do the hard HTTP work.
+For loading WSDL's, you might want to use a PSR-18 client to do the hard HTTP work.
 This allows you for advances setups in which the WSDL is put behind basic authentication.
-This package provides some loaders that can be used to load HTTP locations.
-It can be used in combinations with for example the WSDL loaders from the `php-soap/ext-soap-engine`.
-
+This package provides a PSR-18 [WSDL loader](https://github.com/php-soap/wsdl#wsdl-loader) that can be used to load HTTP locations with your favourite HTTP client.
+It can be used in combinations with for example the WSDL loaders from the [php-soap/ext-soap-engine](https://github.com/php-soap/ext-soap-engine).
 
 ### Psr18Loader
 
@@ -224,14 +223,14 @@ It can be used in combinations with for example the WSDL loaders from the `php-s
 use Http\Client\Common\PluginClient;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
 
-$loadWsdl = Psr18Loader::createForClient(
+$loader = Psr18Loader::createForClient(
     $wsdlClient = new PluginClient(
         $psr18Client,
         ...$middleware
     )
 );
 
-$payload = $loadWsdl('http://some.wsdl');
+$payload = $loader('http://some.wsdl');
 ```
 
 *NOTE:* This loader does not flatten the WSDL file. Any additional files like XSD schema's need to manually be fetched by the loader.
