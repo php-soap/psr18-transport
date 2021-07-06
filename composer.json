@@ -34,10 +34,13 @@
         "php-http/client-common": "^2.3"
     },
     "require-dev": {
+        "ext-soap": "*",
         "nyholm/psr7": "^1.3",
         "php-http/mock-client": "^1.4",
-        "symfony/http-client": "^5.3",
-        "phpunit/phpunit": "^9.5"
+        "php-soap/ext-soap-engine": "dev-main",
+        "php-soap/engine-integration-tests": "dev-main",
+        "phpunit/phpunit": "^9.5",
+        "guzzlehttp/guzzle": "^7.3"
     },
     "repositories": [
         {
@@ -51,6 +54,14 @@
         {
             "type": "path",
             "url": "../wsdl"
+        },
+        {
+            "type": "path",
+            "url": "../ext-soap-engine"
+        },
+        {
+            "type": "path",
+            "url": "../engine-integration-tests"
         }
     ]
 }

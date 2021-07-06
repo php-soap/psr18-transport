@@ -7,7 +7,7 @@ namespace Soap\Psr18Transport\Wsdl;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Soap\Wsd\Loader\WsdlLoader;
+use Soap\Wsdl\Loader\WsdlLoader;
 
 final class Psr18Loader implements WsdlLoader
 {

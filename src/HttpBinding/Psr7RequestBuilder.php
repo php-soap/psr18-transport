@@ -22,10 +22,10 @@ class Psr7RequestBuilder
     const SOAP11 = '1.1';
     const SOAP12 = '1.2';
 
-    private string $endpoint;
+    private string $endpoint = '';
     private string $soapVersion = self::SOAP11;
     private string $soapAction = '';
-    private StreamInterface $soapMessage;
+    private ?StreamInterface $soapMessage = null;
     private bool $hasSoapMessage = false;
     private string $httpMethod = 'POST';
 
@@ -57,7 +57,7 @@ class Psr7RequestBuilder
                 $request = $request->withHeader($name, $value);
             }
         } catch (InvalidArgumentException $e) {
-            throw new RequestException($e->getMessage(), $e->getCode(), $e);
+            throw RequestException::fromException($e);
         }
 
         return $request;
@@ -110,11 +110,11 @@ class Psr7RequestBuilder
     private function validate(): void
     {
         if (!$this->endpoint) {
-            throw new RequestException('There is no endpoint specified.');
+            throw RequestException::noEndpoint();
         }
 
         if (!$this->hasSoapMessage && $this->httpMethod === 'POST') {
-            throw new RequestException('There is no SOAP message specified.');
+            throw RequestException::noMessage();
         }
 
         /**
@@ -122,7 +122,7 @@ class Psr7RequestBuilder
          * @link https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383527
          */
         if ($this->soapVersion === self::SOAP11 && $this->httpMethod !== 'POST') {
-            throw new RequestException('You cannot use the POST method with SOAP 1.1.');
+            throw RequestException::postNotAllowedForSoap11();
         }
 
         /**
@@ -130,7 +130,7 @@ class Psr7RequestBuilder
          * @link https://www.w3.org/TR/2007/REC-soap12-part0-20070427/#L10309
          */
         if ($this->soapVersion === self::SOAP12 && !in_array($this->httpMethod, ['GET', 'POST'])) {
-            throw new RequestException('Invalid SOAP method specified for SOAP 1.2. Expeted: GET or POST.');
+            throw RequestException::invalidMethodForSoap12();
         }
     }
 
