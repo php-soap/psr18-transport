@@ -41,27 +41,5 @@
         "php-soap/engine-integration-tests": "dev-main",
         "phpunit/phpunit": "^9.5",
         "guzzlehttp/guzzle": "^7.3"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../engine"
-        },
-        {
-            "type": "path",
-            "url": "../xml"
-        },
-        {
-            "type": "path",
-            "url": "../wsdl"
-        },
-        {
-            "type": "path",
-            "url": "../ext-soap-engine"
-        },
-        {
-            "type": "path",
-            "url": "../engine-integration-tests"
-        }
-    ]
+    }
 }
