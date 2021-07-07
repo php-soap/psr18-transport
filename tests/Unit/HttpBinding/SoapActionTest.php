@@ -9,40 +9,40 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Soap\Psr18Transport\HttpBinding\SoapActionDetector;
 
-class SoapActionTest extends TestCase
+final class SoapActionTest extends TestCase
 {
-    /** @test */
-    function it_can_detect_soap_action_from_soap_11_SOAPAction_header()
+    
+    public function test_it_can_detect_soap_action_from_soap_11__soap_action_header()
     {
         $request = $this->createRequest()->withAddedHeader('SoapAction', 'actionhere');
         $result = (new SoapActionDetector())->detectFromRequest($request);
 
-        self::assertSame('actionhere', $result);
+        static::assertSame('actionhere', $result);
     }
 
-    /** @test */
-    function it_can_detect_soap_action_from_soap_12_content_type_header_with_double_quote()
+    
+    public function test_it_can_detect_soap_action_from_soap_12_content_type_header_with_double_quote()
     {
         $request = $this->createRequest()
             ->withAddedHeader('Content-Type', 'application/soap+xml;charset=UTF-8;action="actionhere"');
 
         $result = (new SoapActionDetector())->detectFromRequest($request);
 
-        self::assertSame('actionhere', $result);
+        static::assertSame('actionhere', $result);
     }
 
-    /** @test */
-    function it_can_detect_soap_action_from_soap_12_content_type_header_with_single_quote()
+    
+    public function test_it_can_detect_soap_action_from_soap_12_content_type_header_with_single_quote()
     {
         $request = $this->createRequest()
             ->withAddedHeader('Content-Type', 'application/soap+xml;charset=UTF-8;action=\'actionhere\'');
         $result = (new SoapActionDetector())->detectFromRequest($request);
 
-        self::assertSame('actionhere', $result);
+        static::assertSame('actionhere', $result);
     }
 
-    /** @test */
-    function it_throws_an_http_request_exception_when_no_header_could_be_found()
+    
+    public function test_it_throws_an_http_request_exception_when_no_header_could_be_found()
     {
         $this->expectException(RequestException::class);
 

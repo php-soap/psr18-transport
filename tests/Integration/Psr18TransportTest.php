@@ -12,7 +12,7 @@ use Soap\ExtSoapEngine\ExtSoapDriver;
 use Soap\ExtSoapEngine\ExtSoapOptions;
 use Soap\Psr18Transport\Psr18Transport;
 
-class Psr18TransportTest extends AbstractEngineTest
+final class Psr18TransportTest extends AbstractEngineTest
 {
     private Engine $engine;
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Soap\Psr18Transport\Middleware;
 
@@ -11,7 +11,7 @@ use Soap\Xml\Xpath\EnvelopePreset;
 use VeeWee\Xml\Dom\Document;
 use function VeeWee\Xml\Dom\Manipulator\Node\remove;
 
-class RemoveEmptyNodesMiddleware implements Plugin
+final class RemoveEmptyNodesMiddleware implements Plugin
 {
     public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
@@ -23,9 +23,8 @@ class RemoveEmptyNodesMiddleware implements Plugin
                 do {
                     $emptyNodes = $xpath->query('//soap:Envelope/*//*[not(node())]');
                     $emptyNodes->forEach(
-                        fn (DOMNode $element) => remove($element)
+                        static fn (DOMNode $element) => remove($element)
                     );
-
                 } while ($emptyNodes->count());
             }
         );

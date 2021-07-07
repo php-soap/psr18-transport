@@ -1,9 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Soap\Psr18Transport\HttpBinding;
 
-use Http\Message\MessageFactory;
-use Http\Message\StreamFactory;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -17,7 +15,7 @@ use Soap\Psr18Transport\Exception\RequestException;
  * @package Soap\Psr18Transport\HttpBinding\Builder
  * @link https://github.com/meng-tian/soap-http-binding
  */
-class Psr7RequestBuilder
+final class Psr7RequestBuilder
 {
     const SOAP11 = '1.1';
     const SOAP12 = '1.2';
@@ -35,13 +33,12 @@ class Psr7RequestBuilder
     public function __construct(
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface $streamFactory
-    ){
+    ) {
         $this->requestFactory = $requestFactory;
         $this->streamFactory = $streamFactory;
     }
 
     /**
-     * @return RequestInterface
      * @throws RequestException
      */
     public function getHttpRequest(): RequestInterface
@@ -63,7 +60,7 @@ class Psr7RequestBuilder
         return $request;
     }
 
-    public function setEndpoint(string $endpoint)
+    public function setEndpoint(string $endpoint): void
     {
         $this->endpoint = $endpoint;
     }
@@ -71,7 +68,7 @@ class Psr7RequestBuilder
     /**
      * Mark as SOAP 1.1
      */
-    public function isSOAP11()
+    public function isSOAP11(): void
     {
         $this->soapVersion = self::SOAP11;
     }
@@ -79,27 +76,25 @@ class Psr7RequestBuilder
     /**
      * Mark as SOAP 1.2
      */
-    public function isSOAP12()
+    public function isSOAP12(): void
     {
         $this->soapVersion = self::SOAP12;
     }
 
 
-    /**
-     * @param string $soapAction
-     */
-    public function setSoapAction(string $soapAction)
+    
+    public function setSoapAction(string $soapAction): void
     {
         $this->soapAction = $soapAction;
     }
 
-    public function setSoapMessage(string $content)
+    public function setSoapMessage(string $content): void
     {
         $this->soapMessage = $this->streamFactory->createStream($content);
         $this->hasSoapMessage = true;
     }
 
-    public function setHttpMethod(string $method)
+    public function setHttpMethod(string $method): void
     {
         $this->httpMethod = $method;
     }
@@ -129,13 +124,13 @@ class Psr7RequestBuilder
          * SOAP 1.2 only defines HTTP binding with POST and GET methods.
          * @link https://www.w3.org/TR/2007/REC-soap12-part0-20070427/#L10309
          */
-        if ($this->soapVersion === self::SOAP12 && !in_array($this->httpMethod, ['GET', 'POST'])) {
+        if ($this->soapVersion === self::SOAP12 && !in_array($this->httpMethod, ['GET', 'POST'], true)) {
             throw RequestException::invalidMethodForSoap12();
         }
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     private function prepareHeaders(): array
     {
@@ -148,21 +143,23 @@ class Psr7RequestBuilder
 
     /**
      * @link https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383526
+     * @return array<string, string>
      */
     private function prepareSoap11Headers(): array
     {
         $headers = [];
-        $headers['Content-Length'] = (string) $this->soapMessage->getSize();
+        $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
         $headers['SOAPAction'] = $this->soapAction;
         $headers['Content-Type'] = 'text/xml; charset="utf-8"';
 
-        return $headers;
+        return array_filter($headers);
     }
 
     /**
      * SOAPAction header is removed in SOAP 1.2 and now expressed as a value of
      * an (optional) "action" parameter of the "application/soap+xml" media type.
      * @link https://www.w3.org/TR/soap12-part0/#L4697
+     * @return array<string, string>
      */
     private function prepareSoap12Headers(): array
     {
@@ -172,16 +169,16 @@ class Psr7RequestBuilder
             return $headers;
         }
 
-        $headers['Content-Length'] = (string) $this->soapMessage->getSize();
+        $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
         $headers['Content-Type'] = 'application/soap+xml; charset="utf-8"' . '; action="' . $this->soapAction . '"';
 
-        return $headers;
+        return array_filter($headers);
     }
 
     private function prepareMessage(): StreamInterface
     {
         if ($this->httpMethod === 'POST') {
-            return $this->soapMessage;
+            return $this->soapMessage ?? $this->streamFactory->createStream('');
         }
 
         return $this->streamFactory->createStream('');

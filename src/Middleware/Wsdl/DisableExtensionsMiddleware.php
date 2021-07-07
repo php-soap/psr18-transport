@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Soap\Psr18Transport\Middleware\Wsdl;
 
@@ -13,7 +13,7 @@ use VeeWee\Xml\Dom\Document;
 use function VeeWee\Xml\Dom\Builder\namespaced_attribute;
 use function VeeWee\Xml\Dom\Locator\root_namespace_uri;
 
-class DisableExtensionsMiddleware implements Plugin
+final class DisableExtensionsMiddleware implements Plugin
 {
     public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
@@ -33,7 +33,7 @@ class DisableExtensionsMiddleware implements Plugin
             ->query('//wsdl:binding//*[@wsdl:required]')
             ->forEach(
                 static fn (DOMElement $element)
-                => namespaced_attribute($namespace, 'wsdl:required', 'false')($element)
+                    => namespaced_attribute($namespace ?? '', 'wsdl:required', 'false')($element)
             );
     }
 }

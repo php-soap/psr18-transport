@@ -10,10 +10,10 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
 
-class Psr18LoaderTest extends TestCase
+final class Psr18LoaderTest extends TestCase
 {
-    /** @test */
-    public function it_can_load_wsdl_through_psr18_client(): void
+    
+    public function test_it_can_load_wsdl_through_psr18_client(): void
     {
         $expected = '<definitions />';
         $client = new Client();
@@ -28,6 +28,6 @@ class Psr18LoaderTest extends TestCase
         $loader = Psr18Loader::createForClient($client);
         $actual = $loader('http://some.com/schema.wsdl');
 
-        self::assertSame($expected, $actual);
+        static::assertSame($expected, $actual);
     }
 }

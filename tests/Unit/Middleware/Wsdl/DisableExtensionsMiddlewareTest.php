@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace SoapTest\Psr18Transport\Unit\Middleware\Wsdl;
 
@@ -13,13 +13,13 @@ use Soap\Psr18Transport\Middleware\Wsdl\DisableExtensionsMiddleware;
 use Soap\Xml\Xpath\WsdlPreset;
 use VeeWee\Xml\Dom\Document;
 
-class DisableExtensionsMiddlewareTest extends TestCase
+final class DisableExtensionsMiddlewareTest extends TestCase
 {
     private PluginClient $client;
     private Client $mockClient;
     private DisableExtensionsMiddleware $middleware;
 
-    /***
+    /*
      * Initialize all basic objects
      */
     protected function setUp(): void
@@ -29,23 +29,21 @@ class DisableExtensionsMiddlewareTest extends TestCase
         $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
-    /**
-     * @test
-     */
-    function it_is_a_middleware()
+    
+    public function test_it_is_a_middleware()
     {
-        $this->assertInstanceOf(Plugin::class, $this->middleware);
+        static::assertInstanceOf(Plugin::class, $this->middleware);
     }
 
-    /**
-     * @test
-     */
-    function it_removes_required_wsdl_extensions()
+    
+    public function test_it_removes_required_wsdl_extensions()
     {
-        $this->mockClient->addResponse(new Response(
+        $this->mockClient->addResponse(
+            new Response(
             200,
             [],
-            file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-extensions.wsdl'))
+            file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-extensions.wsdl')
+        )
         );
 
         $response = $this->client->sendRequest(new Request('POST', '/'));
@@ -54,7 +52,7 @@ class DisableExtensionsMiddlewareTest extends TestCase
         $xpath = $doc->xpath(new WsdlPreset($doc));
         $expression = '//wsdl:binding/wsaw:UsingAddressing[@wsdl:required="%s"]';
 
-        $this->assertEquals(0, $xpath->query(sprintf($expression, 'true'))->count(), 'Still got required WSDL extensions.');
-        $this->assertEquals(1, $xpath->query(sprintf($expression, 'false'))->count(), 'Cannot find any deactivated WSDL extensions.');
+        static::assertEquals(0, $xpath->query(sprintf($expression, 'true'))->count(), 'Still got required WSDL extensions.');
+        static::assertEquals(1, $xpath->query(sprintf($expression, 'false'))->count(), 'Cannot find any deactivated WSDL extensions.');
     }
 }

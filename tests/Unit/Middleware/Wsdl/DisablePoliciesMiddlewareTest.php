@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace SoapTest\Psr18Transport\Unit\Middleware\Wsdl;
 
@@ -13,7 +13,7 @@ use Soap\Psr18Transport\Middleware\Wsdl\DisablePoliciesMiddleware;
 use VeeWee\Xml\Dom\Document;
 use function VeeWee\Xml\Dom\Xpath\Configurator\namespaces;
 
-class DisablePoliciesMiddlewareTest extends TestCase
+final class DisablePoliciesMiddlewareTest extends TestCase
 {
     private PluginClient $client;
     private Client $mockClient;
@@ -26,23 +26,21 @@ class DisablePoliciesMiddlewareTest extends TestCase
         $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
-    /**
-     * @test
-     */
-    function it_is_a_middleware()
+    
+    public function test_it_is_a_middleware()
     {
-        $this->assertInstanceOf(Plugin::class, $this->middleware);
+        static::assertInstanceOf(Plugin::class, $this->middleware);
     }
 
-    /**
-     * @test
-     */
-    function it_removes_wsdl_policies()
+    
+    public function test_it_removes_wsdl_policies()
     {
-        $this->mockClient->addResponse(new Response(
+        $this->mockClient->addResponse(
+            new Response(
             200,
             [],
-            file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-policies.wsdl'))
+            file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-policies.wsdl')
+        )
         );
 
         $response = $this->client->sendRequest(new Request('POST', '/'));
@@ -53,7 +51,7 @@ class DisablePoliciesMiddlewareTest extends TestCase
             ])
         );
 
-        $this->assertEquals(0, $xpath->query('//wsd:Policy')->count(), 'Still got policies in WSDL file.');
-        $this->assertEquals(0, $xpath->query('//wsd:UsingPolicy')->count(), 'Still got using statements for policies in WSDL file.');
+        static::assertEquals(0, $xpath->query('//wsd:Policy')->count(), 'Still got policies in WSDL file.');
+        static::assertEquals(0, $xpath->query('//wsd:UsingPolicy')->count(), 'Still got using statements for policies in WSDL file.');
     }
 }

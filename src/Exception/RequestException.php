@@ -31,6 +31,6 @@ final class RequestException extends RuntimeException
 
     public static function fromException(Throwable $exception): self
     {
-        return new self($exception->getMessage(), $exception->getCode(), $exception);
+        return new self($exception->getMessage(), (int) $exception->getCode(), $exception);
     }
 }

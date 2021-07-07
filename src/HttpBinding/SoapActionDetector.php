@@ -7,13 +7,13 @@ namespace Soap\Psr18Transport\HttpBinding;
 use Http\Client\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 
-class SoapActionDetector
+final class SoapActionDetector
 {
     public static function detectFromRequest(RequestInterface $request): string
     {
         $header = $request->getHeader('SOAPAction');
         if ($header) {
-            return (string) $header[0];
+            return $header[0];
         }
 
         $contentTypes = $request->getHeader('Content-Type');

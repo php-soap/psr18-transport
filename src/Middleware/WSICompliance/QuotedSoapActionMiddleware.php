@@ -17,12 +17,12 @@ use Soap\Psr18Transport\HttpBinding\SoapActionDetector;
  *  WS-I Compliance failure (R2744):
  *  The value of the SOAPAction transport header must be double-quoted.
  */
-class QuotedSoapActionMiddleware implements Plugin
+final class QuotedSoapActionMiddleware implements Plugin
 {
     public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
         $soapAction = SoapActionDetector::detectFromRequest($request);
-        $soapAction = trim($soapAction ?? '', '"\'');
+        $soapAction = trim($soapAction, '"\'');
 
         return $next($request->withHeader('SOAPAction', '"'.$soapAction.'"'));
     }

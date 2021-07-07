@@ -1,14 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Soap\Psr18Transport\HttpBinding;
 
-use Http\Message\StreamFactory;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Soap\Engine\HttpBinding\SoapRequest;
 use Soap\Engine\HttpBinding\SoapResponse;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 final class Psr7Converter
 {
@@ -18,7 +17,7 @@ final class Psr7Converter
     public function __construct(
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface $streamFactory
-    ){
+    ) {
         $this->requestFactory = $requestFactory;
         $this->streamFactory = $streamFactory;
     }

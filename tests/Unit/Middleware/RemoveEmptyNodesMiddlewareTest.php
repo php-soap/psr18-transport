@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace SoapTest\Psr18Transport\Unit\Middleware;
 
@@ -14,7 +14,7 @@ use Soap\Xml\Xpath\EnvelopePreset;
 use VeeWee\Xml\Dom\Document;
 use VeeWee\Xml\Dom\Xpath;
 
-class RemoveEmptyNodesMiddlewareTest extends TestCase
+final class RemoveEmptyNodesMiddlewareTest extends TestCase
 {
     private PluginClient$client;
     private Client $mockClient;
@@ -27,18 +27,14 @@ class RemoveEmptyNodesMiddlewareTest extends TestCase
         $this->client = new PluginClient($this->mockClient, [$this->middleware]);
     }
 
-    /**
-     * @test
-     */
-    function it_is_a_middleware()
+    
+    public function test_it_is_a_middleware()
     {
-        $this->assertInstanceOf(Plugin::class, $this->middleware);
+        static::assertInstanceOf(Plugin::class, $this->middleware);
     }
 
-    /**
-     * @test
-     */
-    function it_removes_empty_nodes_from_request_xml()
+    
+    public function test_it_removes_empty_nodes_from_request_xml()
     {
         $soapRequest = file_get_contents(FIXTURE_DIR . '/soap/with-empty-nodes-request.xml');
         $this->mockClient->addResponse($response = new Response(200));
@@ -47,12 +43,12 @@ class RemoveEmptyNodesMiddlewareTest extends TestCase
         $soapBody = (string)$this->mockClient->getRequests()[0]->getBody();
         $xpath = $this->fetchEnvelopeXpath($soapBody);
 
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/*')->count(), 3, 'Not all empty nodes are removed');
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:UserID')->count(), 1, 'Not empty node is removed');
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:CustomerID')->count(), 0, 'Empty node is removed');
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress')->count(), 1, 'Not empty parent node is removed');
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress/*')->count(), 3, 'Not all empty child nodes removed');
-        $this->assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress/ns1:AddressID')->count(), 0, 'Empty child node is removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/*')->count(), 3, 'Not all empty nodes are removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:UserID')->count(), 1, 'Not empty node is removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:CustomerID')->count(), 0, 'Empty node is removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress')->count(), 1, 'Not empty parent node is removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress/*')->count(), 3, 'Not all empty child nodes removed');
+        static::assertEquals($xpath->query('//env:Body/ns1:UpdateCustomers/ns1:Customer/ns1:MailAddress/ns1:AddressID')->count(), 0, 'Empty child node is removed');
     }
 
 
