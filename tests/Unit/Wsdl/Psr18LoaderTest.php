@@ -12,7 +12,6 @@ use Soap\Psr18Transport\Wsdl\Psr18Loader;
 
 final class Psr18LoaderTest extends TestCase
 {
-    
     public function test_it_can_load_wsdl_through_psr18_client(): void
     {
         $expected = '<definitions />';

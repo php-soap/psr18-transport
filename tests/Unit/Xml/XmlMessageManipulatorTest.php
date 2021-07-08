@@ -12,7 +12,6 @@ use VeeWee\Xml\Dom\Document;
 
 final class XmlMessageManipulatorTest extends TestCase
 {
-    
     public function test_it_can_manipulate_an_xml_stream(): void
     {
         $xml = '<hello />';

@@ -11,7 +11,6 @@ use Soap\Psr18Transport\HttpBinding\SoapActionDetector;
 
 final class SoapActionTest extends TestCase
 {
-    
     public function test_it_can_detect_soap_action_from_soap_11__soap_action_header()
     {
         $request = $this->createRequest()->withAddedHeader('SoapAction', 'actionhere');

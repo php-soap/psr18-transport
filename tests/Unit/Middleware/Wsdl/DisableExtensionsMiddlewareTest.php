@@ -40,10 +40,10 @@ final class DisableExtensionsMiddlewareTest extends TestCase
     {
         $this->mockClient->addResponse(
             new Response(
-            200,
-            [],
-            file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-extensions.wsdl')
-        )
+                200,
+                [],
+                file_get_contents(FIXTURE_DIR . '/wsdl/wsdl-extensions.wsdl')
+            )
         );
 
         $response = $this->client->sendRequest(new Request('POST', '/'));
