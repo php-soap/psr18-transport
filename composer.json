@@ -22,9 +22,9 @@
     "require": {
         "php": "^8.0",
         "ext-dom": "*",
-        "php-soap/engine": "dev-main",
-        "php-soap/wsdl": "dev-main",
-        "php-soap/xml": "dev-main",
+        "php-soap/engine": "^0.1.0",
+        "php-soap/wsdl": "^0.1.0",
+        "php-soap/xml": "^0.1.0",
         "php-http/discovery": "^1.12",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory-implementation": "^1.0",
@@ -37,8 +37,8 @@
         "ext-soap": "*",
         "nyholm/psr7": "^1.3",
         "php-http/mock-client": "^1.4",
-        "php-soap/ext-soap-engine": "dev-main",
-        "php-soap/engine-integration-tests": "dev-main",
+        "php-soap/ext-soap-engine": "^0.1.0",
+        "php-soap/engine-integration-tests": "^0.1.0",
         "phpunit/phpunit": "^9.5",
         "guzzlehttp/guzzle": "^7.3"
     }
