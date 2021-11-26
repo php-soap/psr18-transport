@@ -24,7 +24,7 @@ final class Psr7ConverterTest extends TestCase
 
     public function test_it_can_create_a_request()
     {
-        $soapRequest = new SoapRequest('request', '/url', 'action', 1, 0);
+        $soapRequest = new SoapRequest('request', '/url', 'action', 1, false);
 
         $request = $this->converter->convertSoapRequest($soapRequest);
 
