@@ -108,6 +108,41 @@ $httpClient = new PluginClient(
 );
 ```
 
+### SoapHeaderMiddleware
+
+Attaches multiple SOAP headers to the request before sending the SOAP envelope.
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\RemoveEmptyNodesMiddleware;
+use Soap\Xml\Builder\Header\Actor;
+use Soap\Xml\Builder\Header\MustUnderstand;
+use Soap\Xml\Builder\SoapHeader;
+
+
+$httpClient = new PluginClient(
+    $psr18Client,
+    [
+        new SoapHeaderMiddleware(
+            new SoapHeader(
+                $tns,
+                'x:Auth',
+                children(
+                    namespaced_element($tns, 'x:user', value('josbos')),
+                    namespaced_element($tns, 'x:password', value('topsecret'))
+                )
+            ),
+            new SoapHeader($tns, 'Acting', Actor::next()),
+            new SoapHeader($tns, 'Understanding', new MustUnderstand())
+        )
+    ]
+);
+```
+
+More information on the SoapHeader configurator can be found in [php-soap/xml](https://github.com/php-soap/xml#soapheaders).
+
 ### HTTPlug middleware
 
 This package includes [all basic plugins from httplug](https://docs.php-http.org/en/latest/plugins/).
