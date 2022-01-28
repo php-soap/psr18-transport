@@ -88,26 +88,6 @@ $wsdlClient = new PluginClient(
 );
 ```
 
-
-### WSICompliance\QuotedSoapActionMiddleware
-
-Some SOAP engines do not guarantee compatibility with the [WS-I basic profile](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html).
-This middleware ensures that the action inside the SOAPAction header is always wrapped with double quotes [as specified in rule R2744](http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html#R2744).
-
-**Usage**
-
-```php
-use Http\Client\Common\PluginClient;
-use Soap\Psr18Transport\Middleware\WSICompliance\QuotedSoapActionMiddleware;
-
-$httpClient = new PluginClient(
-    $psr18Client,
-    [
-        new QuotedSoapActionMiddleware()
-    ]
-);
-```
-
 ### RemoveEmptyNodesMiddleware
 
 Empty properties are converted into empty nodes in the request XML.

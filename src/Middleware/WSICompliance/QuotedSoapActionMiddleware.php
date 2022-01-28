@@ -10,6 +10,8 @@ use Psr\Http\Message\RequestInterface;
 use Soap\Psr18Transport\HttpBinding\SoapActionDetector;
 
 /**
+ * @deprecated The Psr7RequestBuilder now applies this logic automatically. This will be released in v2.x !
+ *
  * @see http://www.ws-i.org/Profiles/BasicProfile-1.0-2004-04-16.html#R2744
  *
  * Fixes error:
