@@ -222,6 +222,7 @@ It can be used in combinations with for example the WSDL loaders from the [php-s
 ```php
 use Http\Client\Common\PluginClient;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
+use Soap\Wsdl\Loader\FlatteningLoader;
 
 $loader = Psr18Loader::createForClient(
     $wsdlClient = new PluginClient(
@@ -230,7 +231,11 @@ $loader = Psr18Loader::createForClient(
     )
 );
 
+// If you want to flatten all imports whilst using this PSR-18 loader:
+$loader = new FlatteningLoader($loader);
+
+
 $payload = $loader('http://some.wsdl');
 ```
 
-*NOTE:* This loader does not flatten the WSDL file. Any additional files like XSD schema's need to manually be fetched by the loader.
+*NOTE:* If you want to flatten the imports inside the WSDL, you'll have to combine this loader with the the [FlatteningLoader](https://github.com/php-soap/wsdl#flatteningloader).
