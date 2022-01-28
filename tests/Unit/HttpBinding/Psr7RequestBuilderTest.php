@@ -33,11 +33,24 @@ final class Psr7RequestBuilderTest extends TestCase
         static::assertSame('POST', $result->getMethod());
         static::assertSame('text/xml; charset="utf-8"', $result->getHeaderLine('Content-Type'));
         static::assertSame((string) strlen($content), $result->getHeaderLine('Content-Length'));
-        static::assertSame($action, $result->getHeaderLine('SOAPAction'));
+        static::assertSame('"'.$action.'"', $result->getHeaderLine('SOAPAction'));
         static::assertSame($endpoint, $result->getUri()->__toString());
     }
 
-    public function test_it_can_not_use__ge_t_method_with_soap11()
+    public function test_it_can_create_soap11_requests_with_wsi_compliant_empty_action()
+    {
+        $this->builder->isSOAP11();
+        $this->builder->setHttpMethod('POST');
+        $this->builder->setEndpoint($endpoint = 'http://www.endpoint.com');
+        $this->builder->setSoapAction('');
+        $this->builder->setSoapMessage($content = 'content');
+
+        $result = $this->builder->getHttpRequest();
+
+        static::assertSame('""', $result->getHeaderLine('SOAPAction'));
+    }
+
+    public function test_it_can_not_use_get_method_with_soap11()
     {
         $this->builder->isSOAP11();
         $this->builder->setHttpMethod('GET');
@@ -69,7 +82,23 @@ final class Psr7RequestBuilderTest extends TestCase
         static::assertSame($endpoint, $result->getUri()->__toString());
     }
 
-    public function test_it_can_use__ge_t_method_with_soap12()
+    public function test_it_can_create_soap12_requests_with_wsi_compliant_empty_action()
+    {
+        $this->builder->isSOAP12();
+        $this->builder->setHttpMethod('POST');
+        $this->builder->setEndpoint($endpoint = 'http://www.endpoint.com');
+        $this->builder->setSoapAction('');
+        $this->builder->setSoapMessage($content = 'content');
+
+        $result = $this->builder->getHttpRequest();
+
+        static::assertSame(
+            'application/soap+xml; charset="utf-8"; action=""',
+            $result->getHeaderLine('Content-Type')
+        );
+    }
+
+    public function test_it_can_use_get_method_with_soap12()
     {
         $this->builder->isSOAP12();
         $this->builder->setHttpMethod('GET');
@@ -88,7 +117,7 @@ final class Psr7RequestBuilderTest extends TestCase
         static::assertSame('', $result->getBody()->__toString());
     }
 
-    public function test_it_can_not_use__pu_t_method_with_soap12()
+    public function test_it_can_not_use__put_method_with_soap12()
     {
         $this->builder->isSOAP12();
         $this->builder->setHttpMethod('PUT');

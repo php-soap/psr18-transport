@@ -149,7 +149,7 @@ final class Psr7RequestBuilder
     {
         $headers = [];
         $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
-        $headers['SOAPAction'] = $this->soapAction;
+        $headers['SOAPAction'] = $this->prepareQuotedSoapAction($this->soapAction);
         $headers['Content-Type'] = 'text/xml; charset="utf-8"';
 
         return array_filter($headers);
@@ -169,8 +169,9 @@ final class Psr7RequestBuilder
             return $headers;
         }
 
+        $soapAction = $this->prepareQuotedSoapAction($this->soapAction);
         $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
-        $headers['Content-Type'] = 'application/soap+xml; charset="utf-8"' . '; action="' . $this->soapAction . '"';
+        $headers['Content-Type'] = 'application/soap+xml; charset="utf-8"' . '; action='.$soapAction;
 
         return array_filter($headers);
     }
@@ -182,5 +183,12 @@ final class Psr7RequestBuilder
         }
 
         return $this->streamFactory->createStream('');
+    }
+
+    private function prepareQuotedSoapAction(string $soapAction): string
+    {
+        $soapAction = trim($soapAction, '"\'');
+
+        return '"'.$soapAction.'"';
     }
 }
