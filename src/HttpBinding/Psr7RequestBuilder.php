@@ -148,7 +148,6 @@ final class Psr7RequestBuilder
     private function prepareSoap11Headers(): array
     {
         $headers = [];
-        $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
         $headers['SOAPAction'] = $this->prepareQuotedSoapAction($this->soapAction);
         $headers['Content-Type'] = 'text/xml; charset="utf-8"';
 
@@ -170,7 +169,6 @@ final class Psr7RequestBuilder
         }
 
         $soapAction = $this->prepareQuotedSoapAction($this->soapAction);
-        $headers['Content-Length'] = (string) $this->soapMessage?->getSize();
         $headers['Content-Type'] = 'application/soap+xml; charset="utf-8"' . '; action='.$soapAction;
 
         return array_filter($headers);
