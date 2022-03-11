@@ -32,7 +32,6 @@ final class Psr7RequestBuilderTest extends TestCase
 
         static::assertSame('POST', $result->getMethod());
         static::assertSame('text/xml; charset="utf-8"', $result->getHeaderLine('Content-Type'));
-        static::assertSame((string) strlen($content), $result->getHeaderLine('Content-Length'));
         static::assertSame('"'.$action.'"', $result->getHeaderLine('SOAPAction'));
         static::assertSame($endpoint, $result->getUri()->__toString());
     }
@@ -77,7 +76,6 @@ final class Psr7RequestBuilderTest extends TestCase
             'application/soap+xml; charset="utf-8"; action="http://www.soapaction.com"',
             $result->getHeaderLine('Content-Type')
         );
-        static::assertSame((string) strlen($content), $result->getHeaderLine('Content-Length'));
         static::assertSame(false, $result->hasHeader('SOAPAction'));
         static::assertSame($endpoint, $result->getUri()->__toString());
     }
@@ -110,7 +108,6 @@ final class Psr7RequestBuilderTest extends TestCase
 
         static::assertSame('GET', $result->getMethod());
         static::assertSame(false, $result->hasHeader('Content-Type'));
-        static::assertSame(false, $result->hasHeader('Content-Length'));
         static::assertSame(false, $result->hasHeader('SOAPAction'));
         static::assertSame('application/soap+xml', $result->getHeaderLine('Accept'));
         static::assertSame($endpoint, $result->getUri()->__toString());
