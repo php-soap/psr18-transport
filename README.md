@@ -33,7 +33,7 @@ $engine = new SimpleEngine(
     $transport = Psr18Transport::createForClient(
         new PluginClient(
             $psr18Client,
-            ...$middleware
+            [...$middleware]
         )
     )
 );
@@ -242,7 +242,7 @@ use Soap\Wsdl\Loader\FlatteningLoader;
 $loader = Psr18Loader::createForClient(
     $wsdlClient = new PluginClient(
         $psr18Client,
-        ...$middleware
+        [...$middleware]
     )
 );
 
@@ -254,3 +254,84 @@ $payload = $loader('http://some.wsdl');
 ```
 
 *NOTE:* If you want to flatten the imports inside the WSDL, you'll have to combine this loader with the the [FlatteningLoader](https://github.com/php-soap/wsdl#flatteningloader).
+
+
+## Async SOAP calls
+
+Since PHP 8.1, fibers are introduced to PHP.
+This means that you can use any fiber based PSR-18 client in order to send async calls.
+
+Here is a short example for `react/http` in combination with `react/async`.
+Your PSR-18 client might look like this:
+
+```php
+use Http\Client\HttpClient;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use React\Http\Browser;
+use function React\Async\await;
+
+final class AsyncPsr18Browser implements HttpClient
+{
+    public function __construct(
+        private Browser $browser
+    ){
+    }
+
+    public function sendRequest(RequestInterface $request): ResponseInterface
+    {
+        return await(
+            $this->browser->request(
+                $request->getMethod(),
+                (string) $request->getUri(),
+                $request->getHeaders(),
+                (string) $request->getBody()
+            )
+        );
+    }
+}
+```
+
+Usage:
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Engine\SimpleEngine;
+use Soap\ExtSoapEngine\ExtSoapDriver;
+use Soap\ExtSoapEngine\ExtSoapOptions;
+use Soap\ExtSoapEngine\Wsdl\TemporaryWsdlLoaderProvider;
+use Soap\Psr18Transport\Psr18Transport;
+use Soap\Psr18Transport\Wsdl\Psr18Loader;
+use Soap\Wsdl\Loader\FlatteningLoader;
+use function React\Async\async;
+use function React\Async\await;
+use function React\Async\parallel;
+
+$browser = new React\Http\Browser();
+$asyncHttpClient = new Psr18Browser($browser);
+$engine = new SimpleEngine(
+    $driver,
+    $transport = Psr18Transport::createForClient(
+        new PluginClient(
+            $asyncHttpClient,
+            [...$middleware]
+        )
+    )
+);
+
+$run = fn () => async(fn () => $engine->request('Add', [1, 2]))()->then(
+    function ($result) {
+        echo 'SUCCESS!' . PHP_EOL;
+        return $result;
+    },
+    function (Exception $e) {
+        echo 'ERROR: ' . $e->getMessage() . PHP_EOL;
+    }
+);
+
+$results = await(parallel([
+    $run,
+    $run,
+    $run
+]));
+```
