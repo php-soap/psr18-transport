@@ -319,9 +319,10 @@ $engine = new SimpleEngine(
     )
 );
 
-$run = fn () => async(fn () => $engine->request('Add', [1, 2]))()->then(
-    function ($result) {
-        echo 'SUCCESS!' . PHP_EOL;
+$add = async(fn ($a, $b) => $engine->request('Add', [$a, $b]));
+$addWithLogger = fn ($a, $b) => $add($a, $b)->then(
+    function ($result) use ($a, $b) {
+        echo "SUCCESS {$a}+{$b} = ${result}!" . PHP_EOL;
         return $result;
     },
     function (Exception $e) {
@@ -330,8 +331,8 @@ $run = fn () => async(fn () => $engine->request('Add', [1, 2]))()->then(
 );
 
 $results = await(parallel([
-    $run,
-    $run,
-    $run
+    fn() => $addWithLogger(1, 2),
+    fn() => $addWithLogger(3, 4),
+    fn() => $addWithLogger(5, 6)
 ]));
 ```
