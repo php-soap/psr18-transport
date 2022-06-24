@@ -310,7 +310,12 @@ use function React\Async\parallel;
 $browser = new React\Http\Browser();
 $asyncHttpClient = new Psr18Browser($browser);
 $engine = new SimpleEngine(
-    $driver,
+    ExtSoapDriver::createFromClient(
+        $client = AbusedClient::createFromOptions(
+            ExtSoapOptions::defaults('http://www.dneonline.com/calculator.asmx?wsdl', [])
+                ->disableWsdlCache()
+        )
+    ),
     $transport = Psr18Transport::createForClient(
         new PluginClient(
             $asyncHttpClient,
@@ -319,7 +324,7 @@ $engine = new SimpleEngine(
     )
 );
 
-$add = async(fn ($a, $b) => $engine->request('Add', [$a, $b]));
+$add = async(fn ($a, $b) => $engine->request('Add', [['intA' => $a, 'intB' => $b]]));
 $addWithLogger = fn ($a, $b) => $add($a, $b)->then(
     function ($result) use ($a, $b) {
         echo "SUCCESS {$a}+{$b} = ${result}!" . PHP_EOL;
@@ -335,4 +340,6 @@ $results = await(parallel([
     fn() => $addWithLogger(3, 4),
     fn() => $addWithLogger(5, 6)
 ]));
+
+var_dump($results);
 ```
