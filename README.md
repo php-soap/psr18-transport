@@ -5,7 +5,16 @@ You can use any client you want, going from curl, guzzle, httplug, symfony/http-
 It allows you to get full control over the HTTP layer, making it possible to e.g. overcome some well-known issues in `ext-soap`.
 This package can best be used together with a [SOAP driver](https://github.com/php-soap/engine) that handles data encoding and decoding.
 
-## Prerequisites
+# Want to help out? 💚
+
+- [Become a Sponsor](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#sponsor)
+- [Let us do your implementation](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#let-us-do-your-implementation)
+- [Contribute](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#contribute)
+- [Help maintain these packages](https://github.com/php-soap/.github/blob/main/HELPING_OUT.md#maintain)
+
+Want more information about the future of this project? Check out this list of the [next big projects](https://github.com/php-soap/.github/blob/main/PROJECTS.md) we'll be working on.
+
+# Prerequisites
 
 Choosing what HTTP client you want to use.
 This package expects some PSR implementations to be present in order to be installed:
@@ -14,7 +23,7 @@ This package expects some PSR implementations to be present in order to be insta
 * PSR-17: `psr/http-factory-implementation` like `nyholm/psr7` or `guzzlehttp/psr7`
 * PSR-18: `psr/http-client-implementation` like `symfony/http-client` or `guzzlehttp/guzzle`
 
-## Installation
+# Installation
 
 ```bash
 composer require php-soap/psr18-transport
