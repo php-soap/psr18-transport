@@ -28,7 +28,12 @@ final class Psr18TransportTest extends AbstractEngineTest
 
     protected function skipVcr(): bool
     {
-        return false;
+        return true;
+    }
+
+    public function test_it_should_be_possible_to_hook_php_vcr_for_testing()
+    {
+        static::markTestSkipped('PHP VCR is not in a good shape anymore');
     }
 
     protected function configureForWsdl(string $wsdl)
