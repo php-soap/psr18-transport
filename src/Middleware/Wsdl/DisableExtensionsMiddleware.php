@@ -31,9 +31,11 @@ final class DisableExtensionsMiddleware implements Plugin
         $namespace = $document->locate(root_namespace_uri());
         $document->xpath(new WsdlPreset($document))
             ->query('//wsdl:binding//*[@wsdl:required]')
+            ->expectAllOfType(DOMElement::class)
             ->forEach(
-                static fn (DOMElement $element)
-                    => namespaced_attribute($namespace ?? '', 'wsdl:required', 'false')($element)
+                static function (DOMElement $element) use ($namespace): void {
+                    namespaced_attribute($namespace ?? '', 'wsdl:required', 'false')($element);
+                }
             );
     }
 }

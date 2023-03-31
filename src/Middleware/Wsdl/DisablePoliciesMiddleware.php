@@ -3,7 +3,6 @@
 namespace Soap\Psr18Transport\Middleware\Wsdl;
 
 use DOMElement;
-use DOMNode;
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
@@ -26,7 +25,6 @@ final class DisablePoliciesMiddleware implements Plugin
             });
     }
 
-
     public function disablePolicies(Document $document): void
     {
         $xpath = $document->xpath(
@@ -36,13 +34,21 @@ final class DisablePoliciesMiddleware implements Plugin
         );
 
         // remove all "UsingPolicy" tags
-        $xpath->query('//wsd:UsingPolicy')->forEach(
-            static fn (DOMElement $element): DOMNode => remove($element)
-        );
+        $xpath->query('//wsd:UsingPolicy')
+            ->expectAllOfType(DOMElement::class)
+            ->forEach(
+                static function (DOMElement $element): void {
+                    remove($element);
+                }
+            );
 
         // remove all "Policy" tags
-        $xpath->query('//wsd:Policy')->forEach(
-            static fn (DOMElement $element): DOMNode => remove($element)
-        );
+        $xpath->query('//wsd:Policy')
+            ->expectAllOfType(DOMElement::class)
+            ->forEach(
+                static function (DOMElement $element): void {
+                    remove($element);
+                }
+            );
     }
 }
