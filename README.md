@@ -271,35 +271,13 @@ Since PHP 8.1, fibers are introduced to PHP.
 This means that you can use any fiber based PSR-18 client in order to send async calls.
 
 Here is a short example for `react/http` in combination with `react/async`.
-Your PSR-18 client might look like this:
 
-```php
-use Http\Client\HttpClient;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use React\Http\Browser;
-use function React\Async\await;
-
-final class AsyncPsr18Browser implements HttpClient
-{
-    public function __construct(
-        private Browser $browser
-    ){
-    }
-
-    public function sendRequest(RequestInterface $request): ResponseInterface
-    {
-        return await(
-            $this->browser->request(
-                $request->getMethod(),
-                (string) $request->getUri(),
-                $request->getHeaders(),
-                (string) $request->getBody()
-            )
-        );
-    }
-}
+```sh
+composer require react/async veewee/psr18-react-browser
 ```
+
+*(There currently is no official fiber based PSR-18 implementation of either AMP or ReactPHP. Therefore, [a small bridge can be used intermediately](https://github.com/veewee/psr18-react-browser))*
+
 
 Usage:
 
@@ -312,12 +290,12 @@ use Soap\ExtSoapEngine\Wsdl\TemporaryWsdlLoaderProvider;
 use Soap\Psr18Transport\Psr18Transport;
 use Soap\Psr18Transport\Wsdl\Psr18Loader;
 use Soap\Wsdl\Loader\FlatteningLoader;
+use Veewee\Psr18ReactBrowser\Psr18ReactBrowserClient;
 use function React\Async\async;
 use function React\Async\await;
 use function React\Async\parallel;
 
-$browser = new React\Http\Browser();
-$asyncHttpClient = new Psr18Browser($browser);
+$asyncHttpClient = Psr18ReactBrowserClient::default();
 $engine = new SimpleEngine(
     ExtSoapDriver::createFromClient(
         $client = AbusedClient::createFromOptions(
