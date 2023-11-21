@@ -29,7 +29,7 @@
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory-implementation": "^1.0",
         "psr/http-message-implementation": "^1.0",
-        "psr/http-message": "^1.0.1",
+        "psr/http-message": "^1.0.1 || ^2.0",
         "veewee/xml": "^2.2",
         "php-http/client-common": "^2.3"
     },
