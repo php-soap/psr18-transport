@@ -41,5 +41,10 @@
         "php-soap/engine-integration-tests": "^1.4",
         "phpunit/phpunit": "^10.0",
         "guzzlehttp/guzzle": "^7.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
