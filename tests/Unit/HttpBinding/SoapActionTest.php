@@ -19,7 +19,14 @@ final class SoapActionTest extends TestCase
         static::assertSame('actionhere', $result);
     }
 
-    
+    public function test_it_strips_out_additional_quotes_from_header_value()
+    {
+        $request = $this->createRequest()->withAddedHeader('SoapAction', '"actionhere"');
+        $result = (new SoapActionDetector())->detectFromRequest($request);
+
+        static::assertSame('actionhere', $result);
+    }
+
     public function test_it_can_detect_soap_action_from_soap_12_content_type_header_with_double_quote()
     {
         $request = $this->createRequest()
@@ -30,7 +37,7 @@ final class SoapActionTest extends TestCase
         static::assertSame('actionhere', $result);
     }
 
-    
+
     public function test_it_can_detect_soap_action_from_soap_12_content_type_header_with_single_quote()
     {
         $request = $this->createRequest()
@@ -40,7 +47,7 @@ final class SoapActionTest extends TestCase
         static::assertSame('actionhere', $result);
     }
 
-    
+
     public function test_it_throws_an_http_request_exception_when_no_header_could_be_found()
     {
         $this->expectException(RequestException::class);

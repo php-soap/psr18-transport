@@ -11,9 +11,10 @@ final class SoapActionDetector
 {
     public static function detectFromRequest(RequestInterface $request): string
     {
+        $normalize = static fn (string $action): string => trim($action, '"\'');
         $header = $request->getHeader('SOAPAction');
         if ($header) {
-            return $header[0];
+            return $normalize($header[0]);
         }
 
         $contentTypes = $request->getHeader('Content-Type');
@@ -21,7 +22,7 @@ final class SoapActionDetector
             $contentType = $contentTypes[0];
             foreach (explode(';', $contentType) as $part) {
                 if (strpos($part, 'action=') !== false) {
-                    return trim(explode('=', $part)[1], '"\'');
+                    return $normalize(explode('=', $part)[1]);
                 }
             }
         }
