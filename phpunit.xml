@@ -1,4 +1,11 @@
-<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="./tests/bootstrap.php"
+         colors="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         failOnWarning="true"
+         failOnPhpunitWarning="true">
     <testsuites>
         <testsuite name="Integration">
             <directory>./tests/Integration</directory>

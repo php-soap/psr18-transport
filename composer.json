@@ -20,11 +20,11 @@
         }
     ],
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "ext-dom": "*",
-        "php-soap/engine": "^2.13",
-        "php-soap/wsdl": "^1.12",
-        "php-soap/xml": "^1.8",
+        "php-soap/engine": "^2.16",
+        "php-soap/wsdl": "^1.14",
+        "php-soap/xml": "^1.9",
         "php-http/discovery": "^1.12",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory-implementation": "^1.0",
@@ -38,8 +38,10 @@
         "nyholm/psr7": "^1.5",
         "php-http/mock-client": "^1.5",
         "php-soap/ext-soap-engine": "^1.7",
-        "php-soap/engine-integration-tests": "^1.9",
-        "phpunit/phpunit": "^10.0 || ^11.0",
+        "php-soap/engine-integration-tests": "^1.10",
+        "phpunit/phpunit": "~12.3",
+        "vimeo/psalm": "~6.13",
+        "php-cs-fixer/shim": "~3.88",
         "guzzlehttp/guzzle": "^7.5"
     },
     "config": {
