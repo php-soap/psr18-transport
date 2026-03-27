@@ -2,7 +2,7 @@
 
 namespace Soap\Psr18Transport\Middleware;
 
-use DOMNode;
+use Dom\Node;
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
@@ -23,7 +23,7 @@ final class RemoveEmptyNodesMiddleware implements Plugin
                 do {
                     $emptyNodes = $xpath->query('//soap:Envelope/*//*[not(node())]');
                     $emptyNodes->forEach(
-                        static fn (DOMNode $element) => remove($element)
+                        static fn (Node $element) => remove($element)
                     );
                 } while ($emptyNodes->count());
             }

@@ -3,7 +3,7 @@
     errorLevel="1"
     resolveFromConfigFile="true"
     strictBinaryOperands="true"
-    phpVersion="8.3"
+    phpVersion="8.4"
     allowStringToStandInForClass="true"
     rememberPropertyAssignmentsAfterCall="false"
     skipChecksOnUnresolvableIncludes="false"
@@ -13,6 +13,9 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
+    <stubs>
+        <file name="vendor/veewee/xml/stubs/DOM.phpstub" />
+    </stubs>
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>

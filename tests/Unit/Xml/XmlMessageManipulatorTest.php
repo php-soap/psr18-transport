@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace SoapTest\Psr18Transport\Xml;
 
-use DOMDocument;
+use Dom\XMLDocument;
 use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -19,7 +19,7 @@ final class XmlMessageManipulatorTest extends TestCase
         $message = Psr17FactoryDiscovery::findResponseFactory()->createResponse()->withBody($stream);
 
         $manipulated = (new XmlMessageManipulator)($message, static function (Document $doc): void {
-            $doc->manipulate(static function (DOMDocument $dom) {
+            $doc->manipulate(static function (XMLDocument $dom) {
                 $dom->documentElement->setAttribute('name', 'world');
             });
         });

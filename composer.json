@@ -20,17 +20,17 @@
         }
     ],
     "require": {
-        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+        "php": "~8.4.0 || ~8.5.0",
         "ext-dom": "*",
-        "php-soap/engine": "^2.16",
-        "php-soap/wsdl": "^1.14",
-        "php-soap/xml": "^1.9",
+        "php-soap/engine": "^2.19",
+        "php-soap/wsdl": "^1.19",
+        "php-soap/xml": "^1.10",
         "php-http/discovery": "^1.12",
         "psr/http-client-implementation": "^1.0",
         "psr/http-factory-implementation": "^1.0",
         "psr/http-message-implementation": "^1.0",
         "psr/http-message": "^1.0.1|^2.0",
-        "veewee/xml": "^3.0",
+        "veewee/xml": "^4.9",
         "php-http/client-common": "^2.3"
     },
     "require-dev": {

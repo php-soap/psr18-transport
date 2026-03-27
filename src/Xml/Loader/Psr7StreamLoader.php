@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Soap\Psr18Transport\Xml\Loader;
 
-use DOMDocument;
+use Dom\XMLDocument;
 use Psr\Http\Message\StreamInterface;
 use Soap\Psr18Transport\Exception\RequestException;
 use VeeWee\Xml\Dom\Loader\Loader;
@@ -22,7 +22,7 @@ final class Psr7StreamLoader implements Loader
     /**
      * @throws RequestException
      */
-    public function __invoke(DOMDocument $document): void
+    public function __invoke(): XMLDocument
     {
         $this->stream->rewind();
         $contents = (string) $this->stream;
@@ -30,6 +30,6 @@ final class Psr7StreamLoader implements Loader
             throw RequestException::noMessage();
         }
 
-        xml_string_loader($contents)($document);
+        return xml_string_loader($contents)();
     }
 }
