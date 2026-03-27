@@ -2,7 +2,7 @@
 
 namespace Soap\Psr18Transport\Middleware\Wsdl;
 
-use DOMElement;
+use Dom\Element;
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
@@ -31,9 +31,9 @@ final class DisableExtensionsMiddleware implements Plugin
         $namespace = $document->locate(root_namespace_uri());
         $document->xpath(new WsdlPreset($document))
             ->query('//wsdl:binding//*[@wsdl:required]')
-            ->expectAllOfType(DOMElement::class)
+            ->expectAllOfType(Element::class)
             ->forEach(
-                static function (DOMElement $element) use ($namespace): void {
+                static function (Element $element) use ($namespace): void {
                     namespaced_attribute($namespace ?? '', 'wsdl:required', 'false')($element);
                 }
             );
