@@ -117,6 +117,37 @@ $httpClient = new PluginClient(
 );
 ```
 
+### PromoteNamespacesMiddleware
+
+The [`php-soap/encoding`](https://github.com/php-soap/encoding) package
+encodes and decodes SOAP payloads isomorphically: every encoded element
+declares its own `xmlns:*` prefixes locally, so the same fragment produces
+the same XML whether it lives at the root of a document or deep inside
+another element. That is valid XML, but some SOAP servers enforce via XSD
+that all namespaces are declared on the envelope itself and reject payloads
+with descendant-level declarations (e.g. Microsoft Business Central).
+
+Plug this middleware in between the encoder and the wire to rewrite the
+outgoing request so that every prefixed `xmlns:*` declaration found on a
+descendant is hoisted to the envelope, keeping the original prefix names
+intact. Default namespaces (`xmlns="..."`) and prefixes that conflict with
+a declaration already on the envelope are left untouched.
+
+**Usage**
+
+```php
+use Http\Client\Common\PluginClient;
+use Soap\Psr18Transport\Middleware\PromoteNamespacesMiddleware;
+
+
+$httpClient = new PluginClient(
+    $psr18Client,
+    [
+        new PromoteNamespacesMiddleware()
+    ]
+);
+```
+
 ### SoapHeaderMiddleware
 
 Attaches multiple SOAP headers to the request before sending the SOAP envelope.
